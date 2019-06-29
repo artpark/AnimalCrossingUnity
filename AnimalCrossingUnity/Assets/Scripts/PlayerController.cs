@@ -22,12 +22,19 @@ public class PlayerController : MonoBehaviour
 
         UpdatePlayerPosition();
         UpdateAngleToFace();
-        UpdateCameraPosition();
     }
 
     void UpdatePlayerPosition()
     {
-        gameObject.transform.position = new Vector3(transform.position.x + (h * walkSpeed), transform.position.y, transform.position.z + (v * walkSpeed));
+        float speed = walkSpeed;
+
+        // If the player is going diagonal, reduce their walk speed
+        if (v + h == 2 || v + h == -2 || v + h == 0)
+        {
+            speed = (float)(speed / 1.5);
+        }
+        gameObject.transform.position = new Vector3(transform.position.x + (h * speed), transform.position.y, transform.position.z + (v * speed));
+        camera.transform.position     = new Vector3(camera.transform.position.x + (h * speed), camera.transform.position.y, camera.transform.position.z + (v * speed));
     }
 
     void UpdateAngleToFace()
@@ -53,10 +60,5 @@ public class PlayerController : MonoBehaviour
 
         Quaternion rotation = Quaternion.Euler(0, angleToFace, 0);
         gameObject.transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed);
-    }
-
-    void UpdateCameraPosition()
-    {
-        camera.transform.position = new Vector3(camera.transform.position.x + (h * walkSpeed), camera.transform.position.y, camera.transform.position.z + (v * walkSpeed));
     }
 }
